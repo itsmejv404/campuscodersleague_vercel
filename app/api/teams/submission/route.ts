@@ -2,9 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { promises as fs } from "fs";
+import { put, del } from "@vercel/blob";
 import path from "path";
-import crypto from "crypto";
 
 export const dynamic = "force-dynamic";
 
@@ -224,34 +223,32 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Save PDF to public/uploads/submissions
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    const uploadsDir = path.join(process.cwd(), "public", "uploads", "submissions");
-    await fs.mkdir(uploadsDir, { recursive: true });
-
-    // Generate a cryptographically secure random filename to prevent unauthorized guessing or enumeration
-    const randomHex = crypto.randomBytes(24).toString("hex");
-    const uniqueFileName = `${crypto.randomUUID()}_${randomHex}.pdf`;
-    const filePath = path.join(uploadsDir, uniqueFileName);
-
-    await fs.writeFile(filePath, buffer);
-    const pdfUrl = `/uploads/submissions/${uniqueFileName}`;
-
-    // Upsert Submission in DB
+    // Clean up previous blob if updating
     const existingSubmission = team.submission;
-    const nextCount = (existingSubmission?.submissionCount || 0) + 1;
-
-    // If there was an old file, optionally clean it up if in the same folder
-    if (existingSubmission?.pdfUrl?.startsWith("/uploads/submissions/")) {
+    if (existingSubmission?.pdfUrl) {
       try {
-        const oldFile = path.join(process.cwd(), "public", existingSubmission.pdfUrl);
-        await fs.unlink(oldFile).catch(() => {});
-      } catch {
-        // Non-critical cleanup
+        await del(existingSubmission.pdfUrl, {
+          token: process.env.BLOB_READ_WRITE_TOKEN || process.env.UPLOADS_READ_WRITE_TOKEN,
+        });
+      } catch (e) {
+        console.warn("Failed to delete previous blob:", e);
       }
     }
+
+    // Upload PDF to Vercel Blob
+    const sanitizedTeamName = team.name.replace(/[^a-zA-Z0-9_-]/g, "_").toLowerCase();
+    const blobPath = `submissions/${sanitizedTeamName}_${Date.now()}_${originalFileName}`;
+
+    const blob = await put(blobPath, file, {
+      access: "public",
+      contentType: "application/pdf",
+      token: process.env.BLOB_READ_WRITE_TOKEN || process.env.UPLOADS_READ_WRITE_TOKEN,
+    });
+
+    const pdfUrl = blob.url;
+
+    // Upsert Submission in DB
+    const nextCount = (existingSubmission?.submissionCount || 0) + 1;
 
     const updatedSubmission = await prisma.submission.upsert({
       where: { teamId: targetTeamId },

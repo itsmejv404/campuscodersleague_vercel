@@ -151,7 +151,7 @@ export default function VotePage() {
       <div className="py-16 px-4 flex flex-col items-center justify-center min-h-[50vh]">
         <div className="relative flex items-center justify-center mb-6">
           <div className="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm animate-pulse">
-            <Vote className="w-8 h-8" />
+            <VoteIcon className="w-8 h-8" />
           </div>
           <div className="absolute -inset-2 rounded-2xl border-2 border-indigo-600 border-t-transparent animate-spin" />
         </div>

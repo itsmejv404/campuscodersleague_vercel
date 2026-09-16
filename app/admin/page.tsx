@@ -152,11 +152,10 @@ export default function AdminDashboardPage() {
       {/* Feedback Banner */}
       {resetFeedback && (
         <div
-          className={`p-4 rounded-lg border flex items-center justify-between text-xs sm:text-sm ${
-            resetFeedback.type === "success"
+          className={`p-4 rounded-lg border flex items-center justify-between text-xs sm:text-sm ${resetFeedback.type === "success"
               ? "bg-green-50 border-green-200 text-green-800"
               : "bg-red-50 border-red-200 text-red-800"
-          }`}
+            }`}
         >
           <div className="flex items-center space-x-2">
             {resetFeedback.type === "success" ? (
@@ -262,7 +261,7 @@ export default function AdminDashboardPage() {
             </div>
             <h3 className="text-base font-bold text-gray-900">Participant Registry</h3>
             <p className="text-xs text-gray-500 mt-1">
-              View all 354+ participants from CS & Core branches, upload via Excel/CSV, and inspect department distribution.
+              View all participants from CS & Core branches, upload via Excel/CSV, and inspect department distribution.
             </p>
           </div>
           <div className="mt-6">

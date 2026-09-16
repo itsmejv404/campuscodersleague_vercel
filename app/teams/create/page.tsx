@@ -333,20 +333,18 @@ export default function CreateTeamPage() {
 
             <div className="flex items-center space-x-2 flex-shrink-0">
               <span
-                className={`px-2.5 py-1 rounded-md text-xs font-semibold ${
-                  csCount === 3
+                className={`px-2.5 py-1 rounded-md text-xs font-semibold ${csCount === 3
                     ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                     : "bg-blue-50 text-blue-700 border border-blue-200"
-                }`}
+                  }`}
               >
                 CS: {csCount}/3
               </span>
               <span
-                className={`px-2.5 py-1 rounded-md text-xs font-semibold ${
-                  nonCsCount === 1
+                className={`px-2.5 py-1 rounded-md text-xs font-semibold ${nonCsCount === 1
                     ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                     : "bg-purple-50 text-purple-700 border border-purple-200"
-                }`}
+                  }`}
               >
                 Core: {nonCsCount}/1
               </span>
@@ -391,13 +389,12 @@ export default function CreateTeamPage() {
                 setTeamName(e.target.value);
                 setFormError(null);
               }}
-              className={`block w-full px-3.5 py-2.5 text-sm border rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 transition ${
-                isNameDuplicate
+              className={`block w-full px-3.5 py-2.5 text-sm border rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 transition ${isNameDuplicate
                   ? "border-red-300 focus:ring-red-500 bg-red-50/20"
                   : cleanTeamName.length >= 2
-                  ? "border-emerald-300 focus:ring-emerald-500"
-                  : "border-gray-300 focus:ring-indigo-600"
-              }`}
+                    ? "border-emerald-300 focus:ring-emerald-500"
+                    : "border-gray-300 focus:ring-indigo-600"
+                }`}
             />
           </div>
 
@@ -429,7 +426,7 @@ export default function CreateTeamPage() {
             <div>
               <h2 className="text-base font-bold text-gray-900">Team Members (4 Slots)</h2>
               <p className="text-xs text-gray-500">
-                Select 3 CS students + 1 Core student from the 354 participant pool.
+                Select 3 CS students + 1 Core student from the participant pool.
               </p>
             </div>
             <button
@@ -449,24 +446,22 @@ export default function CreateTeamPage() {
             {selectedMembers.map((member, slotIdx) => (
               <div
                 key={slotIdx}
-                className={`border rounded-lg p-4 transition ${
-                  member
+                className={`border rounded-lg p-4 transition ${member
                     ? "bg-white border-gray-200 shadow-2xs"
                     : activeSlot === slotIdx
-                    ? "border-indigo-600 bg-indigo-50/20"
-                    : "border-dashed border-gray-300 bg-gray-50/50 hover:bg-gray-50"
-                }`}
+                      ? "border-indigo-600 bg-indigo-50/20"
+                      : "border-dashed border-gray-300 bg-gray-50/50 hover:bg-gray-50"
+                  }`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-semibold text-gray-500">Slot {slotIdx + 1}</span>
                   {member && (
                     <div className="flex items-center space-x-1.5">
                       <span
-                        className={`text-[11px] px-2 py-0.5 rounded font-semibold ${
-                          member.category === "CS"
+                        className={`text-[11px] px-2 py-0.5 rounded font-semibold ${member.category === "CS"
                             ? "bg-blue-100 text-blue-800"
                             : "bg-purple-100 text-purple-800"
-                        }`}
+                          }`}
                       >
                         {member.category === "CS" ? "CS" : "Core"}
                       </span>
@@ -519,9 +514,8 @@ export default function CreateTeamPage() {
               <span className="text-gray-500">
                 {isLastTeamsAdvantage
                   ? `Please select at least 3 members (currently ${filledMembers.length} selected)`
-                  : `Remaining: ${3 - csCount > 0 ? `${3 - csCount} CS` : ""} ${
-                      1 - nonCsCount > 0 ? `${1 - nonCsCount} Core` : ""
-                    }`}
+                  : `Remaining: ${3 - csCount > 0 ? `${3 - csCount} CS` : ""} ${1 - nonCsCount > 0 ? `${1 - nonCsCount} Core` : ""
+                  }`}
               </span>
             )}
           </div>
@@ -600,11 +594,10 @@ export default function CreateTeamPage() {
               <button
                 type="button"
                 onClick={() => setModalCategoryTab("ALL")}
-                className={`pb-2 px-3 text-xs font-semibold border-b-2 transition whitespace-nowrap ${
-                  modalCategoryTab === "ALL"
+                className={`pb-2 px-3 text-xs font-semibold border-b-2 transition whitespace-nowrap ${modalCategoryTab === "ALL"
                     ? "border-indigo-600 text-indigo-600 bg-white rounded-t-md"
                     : "border-transparent text-gray-500 hover:text-gray-900"
-                }`}
+                  }`}
               >
                 All Available ({unselectedParticipants.length})
               </button>
@@ -612,11 +605,10 @@ export default function CreateTeamPage() {
               <button
                 type="button"
                 onClick={() => setModalCategoryTab("CS")}
-                className={`pb-2 px-3 text-xs font-semibold border-b-2 transition whitespace-nowrap ${
-                  modalCategoryTab === "CS"
+                className={`pb-2 px-3 text-xs font-semibold border-b-2 transition whitespace-nowrap ${modalCategoryTab === "CS"
                     ? "border-blue-600 text-blue-700 bg-white rounded-t-md"
                     : "border-transparent text-gray-500 hover:text-gray-900"
-                }`}
+                  }`}
               >
                 CS Students ({totalUnselectedCS})
               </button>
@@ -624,11 +616,10 @@ export default function CreateTeamPage() {
               <button
                 type="button"
                 onClick={() => setModalCategoryTab("NonCS")}
-                className={`pb-2 px-3 text-xs font-semibold border-b-2 transition whitespace-nowrap flex items-center space-x-1 ${
-                  modalCategoryTab === "NonCS"
+                className={`pb-2 px-3 text-xs font-semibold border-b-2 transition whitespace-nowrap flex items-center space-x-1 ${modalCategoryTab === "NonCS"
                     ? "border-purple-600 text-purple-700 bg-white rounded-t-md font-bold"
                     : "border-transparent text-purple-600 hover:text-purple-900 font-medium"
-                }`}
+                  }`}
               >
                 <span>Core Students ({totalUnselectedCore})</span>
                 {nonCsCount === 0 && (
@@ -670,9 +661,8 @@ export default function CreateTeamPage() {
                     <div
                       key={p.id}
                       onClick={() => handleSelectMember(p)}
-                      className={`p-2.5 border rounded-lg hover:border-indigo-600 hover:bg-indigo-50/20 cursor-pointer transition flex items-center justify-between ${
-                        p.category === "NonCS" ? "border-purple-200 bg-purple-50/20" : "border-gray-200"
-                      }`}
+                      className={`p-2.5 border rounded-lg hover:border-indigo-600 hover:bg-indigo-50/20 cursor-pointer transition flex items-center justify-between ${p.category === "NonCS" ? "border-purple-200 bg-purple-50/20" : "border-gray-200"
+                        }`}
                     >
                       <div>
                         <div className="flex items-center space-x-2">
@@ -680,11 +670,10 @@ export default function CreateTeamPage() {
                             {p.name}
                           </span>
                           <span
-                            className={`text-[9px] px-1.5 py-0.2 rounded font-bold ${
-                              p.category === "CS"
+                            className={`text-[9px] px-1.5 py-0.2 rounded font-bold ${p.category === "CS"
                                 ? "bg-blue-100 text-blue-800"
                                 : "bg-purple-100 text-purple-800"
-                            }`}
+                              }`}
                           >
                             {p.category === "CS" ? "CS" : "Core"}
                           </span>

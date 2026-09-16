@@ -17,6 +17,7 @@ import {
   CheckCircle2,
   X,
   RefreshCw,
+  UserCheck,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
@@ -24,6 +25,7 @@ export default function AdminDashboardPage() {
     participants: 0,
     teams: 0,
     votes: 0,
+    admins: 0,
     windowStatus: "Loading...",
   });
   const [loading, setLoading] = useState(true);
@@ -39,15 +41,17 @@ export default function AdminDashboardPage() {
 
   const loadStats = async () => {
     try {
-      const [partRes, teamsRes, winRes] = await Promise.all([
+      const [partRes, teamsRes, winRes, adminsRes] = await Promise.all([
         fetch("/api/admin/participants"),
         fetch("/api/teams"),
         fetch("/api/admin/voting-window"),
+        fetch("/api/admin/admins"),
       ]);
 
       const partData = await partRes.json();
       const teamsData = await teamsRes.json();
       const winData = await winRes.json();
+      const adminsData = await adminsRes.json();
 
       const totalVotes = (teamsData.teams || []).reduce(
         (acc: number, t: { voteCount: number }) => acc + (t.voteCount || 0),
@@ -64,6 +68,7 @@ export default function AdminDashboardPage() {
         participants: partData.totalCount || 0,
         teams: teamsData.teams?.length || 0,
         votes: totalVotes,
+        admins: adminsData.admins?.length || 0,
         windowStatus: winLabel,
       });
     } catch (err) {
@@ -332,6 +337,28 @@ export default function AdminDashboardPage() {
               className="w-full inline-flex items-center justify-center py-2.5 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium transition shadow-xs"
             >
               View & Export Results
+              <ArrowRight className="w-3.5 h-3.5 ml-2" />
+            </Link>
+          </div>
+        </div>
+
+        {/* Module 6: Admin Delegation & Roles */}
+        <div className="bg-white border border-gray-200 rounded-xl p-6 flex flex-col justify-between hover:border-gray-300 transition shadow-2xs">
+          <div>
+            <div className="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center mb-4 border border-indigo-100">
+              <UserCheck className="w-5 h-5" />
+            </div>
+            <h3 className="text-base font-bold text-gray-900">Admin Privileges</h3>
+            <p className="text-xs text-gray-500 mt-1">
+              Appoint or revoke administrator permissions. Master Admin (2k24cse073@kiot.ac.in) controls role delegation.
+            </p>
+          </div>
+          <div className="mt-6">
+            <Link
+              href="/admin/admins"
+              className="w-full inline-flex items-center justify-center py-2.5 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium transition shadow-xs"
+            >
+              Manage Admins
               <ArrowRight className="w-3.5 h-3.5 ml-2" />
             </Link>
           </div>

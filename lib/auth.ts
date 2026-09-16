@@ -14,12 +14,27 @@ export function isAllowedDomain(email: string): boolean {
   return orgDomains.some((domain) => normalizedEmail.endsWith(domain));
 }
 
+export function getMasterAdminEmail(): string {
+  return (process.env.MASTER_ADMIN_EMAIL || "2k24cse073@kiot.ac.in").toLowerCase().trim();
+}
+
+export function isMasterAdminEmail(email?: string | null): boolean {
+  if (!email) return false;
+  const master = getMasterAdminEmail();
+  return email.toLowerCase().trim() === master;
+}
+
 export function getAdminEmails(): string[] {
   const raw = process.env.ADMIN_EMAILS || "";
-  return raw
+  const list = raw
     .split(",")
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean);
+  const master = getMasterAdminEmail();
+  if (!list.includes(master)) {
+    list.push(master);
+  }
+  return list;
 }
 
 export const authOptions: NextAuthOptions = {
@@ -78,7 +93,12 @@ export const authOptions: NextAuthOptions = {
         });
 
         // Resolve User Role
+        const isMaster = isMasterAdminEmail(email);
         const adminEmails = getAdminEmails();
+        const existingUser = await prisma.user.findUnique({
+          where: { email },
+        });
+
         let role: UserRole = "VOTER";
         let participantId: string | null = null;
         let studentId: string | null = null;
@@ -86,7 +106,7 @@ export const authOptions: NextAuthOptions = {
         let teamId: string | null = null;
         let name: string = email.split("@")[0];
 
-        if (adminEmails.includes(email)) {
+        if (isMaster || existingUser?.role === "ADMIN" || adminEmails.includes(email)) {
           role = "ADMIN";
         }
 
@@ -144,8 +164,15 @@ export const authOptions: NextAuthOptions = {
         // Dynamically synchronize role & participant details on JWT check
         try {
           const userEmail = (token.email as string).toLowerCase().trim();
+          const isMaster = isMasterAdminEmail(userEmail);
           const adminEmails = getAdminEmails();
-          const isAdmin = adminEmails.includes(userEmail);
+          
+          const dbUser = await prisma.user.findUnique({
+            where: { email: userEmail },
+            select: { role: true },
+          });
+
+          const isAdmin = isMaster || dbUser?.role === "ADMIN" || adminEmails.includes(userEmail);
 
           const participant = await prisma.participant.findUnique({
             where: { email: userEmail },

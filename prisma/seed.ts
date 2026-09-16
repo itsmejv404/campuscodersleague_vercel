@@ -8,13 +8,18 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("🌱 Starting Team Vote database seeding & sheet sync...");
 
-  // 1. Seed Admin Users from ADMIN_EMAILS
+  // 1. Seed Admin Users from ADMIN_EMAILS and Master Admin
   const orgDomain = process.env.ORG_DOMAIN || "@kiot.ac.in";
-  const rawAdmins = process.env.ADMIN_EMAILS || `2k24cse073${orgDomain.split(",")[0]}`;
+  const masterEmail = (process.env.MASTER_ADMIN_EMAIL || `2k24cse073${orgDomain.split(",")[0]}`).toLowerCase().trim();
+  const rawAdmins = process.env.ADMIN_EMAILS || masterEmail;
   const adminEmails = rawAdmins
     .split(",")
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean);
+
+  if (!adminEmails.includes(masterEmail)) {
+    adminEmails.push(masterEmail);
+  }
 
   for (const email of adminEmails) {
     const admin = await prisma.user.upsert({
@@ -25,7 +30,7 @@ async function main() {
         role: Role.ADMIN,
       },
     });
-    console.log(`✅ Admin user ready: ${admin.email} (${admin.role})`);
+    console.log(`Admin user ready: ${admin.email} (${admin.role})`);
   }
 
   // 2. Read and Import all Students from Sheets CSV files

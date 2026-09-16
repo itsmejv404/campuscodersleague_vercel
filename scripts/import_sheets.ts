@@ -123,7 +123,7 @@ export async function importAllSheets() {
   const nonCsCount = allRecords.filter((r) => r.category === Category.NonCS).length;
   console.log(`📊 Category Distribution: ${csCount} CS, ${nonCsCount} Core (NonCS)\n`);
 
-  console.log("💾 Upserting records into Supabase PostgreSQL...");
+  console.log("💾 Upserting records into Prisma Postgres...");
 
   let upserted = 0;
   for (const item of allRecords) {
